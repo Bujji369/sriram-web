@@ -60,8 +60,8 @@ jobs:
    steps:
      - uses: actions/checkout@v3
        with:
-         repository: 
-         ref: 'master'
+         repository: Bujji369/sriram-web-infra
+         ref: 'main'
          token: ${{ secrets.G_TOKEN }}
      - name: setup git config
        run: |
