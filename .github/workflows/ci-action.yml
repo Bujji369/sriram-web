@@ -76,7 +76,7 @@ jobs:
          git config --global user.email "medichirlabujji@gmail.com"
          git config --global user.name "Bujji369"
          echo ${{ github.sha }}
-         sed -i "s#${{ github.actor }}.*#${{ github.actor }}/sriram-web:${{ github.sha }}#g" sample-webapp1.yml
+         sed -i "s#${{ github.actor }}.*#${{ github.actor }}/sriram-web:${{ github.sha }}#g" sample-webapp.yml
          git add -A
          git commit -am "update image for - ${{ github.sha }}"
      - run: echo ${{ github }}
