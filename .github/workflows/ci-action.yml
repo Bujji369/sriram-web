@@ -56,7 +56,7 @@ jobs:
              bujji369/sriram-web:${{ github.sha }}
              ghcr.io/bujji369/sriram-web:${{ github.sha }}
              
-          push: ${{ github.ref == 'refs/head/master' }}
+          push: ${{ github.ref == '/usr/local/tomcat/webapps/maven-web-app.war' }}
         
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
