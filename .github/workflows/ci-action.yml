@@ -54,8 +54,8 @@ jobs:
         with:
           context: ./
           tags: |
-             Bujji369/sriram-web:${{ github.sha }}
-             ghcr.io/Bujji369/sriram-web:${{ github.sha }}
+             bujji369/sriram-web:${{ github.sha }}
+             ghcr.io/bujji369/sriram-web:${{ github.sha }}
              
           push: ${{ github.ref == 'refs/head/master' }}
         
