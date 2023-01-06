@@ -80,7 +80,7 @@ jobs:
          git add -A
          git commit -am "update image for - ${{ github.sha }}"
      - run: echo ${{ github }}
-     - run: git push origin master
+     - run: git push -u origin master
             
 
     
