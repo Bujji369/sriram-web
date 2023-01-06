@@ -59,10 +59,10 @@ jobs:
              
           push: ${{ github.ref == 'refs/head/master' }}
         
-        - name: Image digest
-          run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
           
- update-manifest-stage:
+  update-manifest-stage:
    runs-on: ubuntu-latest
    needs: ['build-and-push-docker-image']
    steps:
@@ -72,15 +72,15 @@ jobs:
          ref: 'main'
          token: ${{ secrets.G_TOKEN }}
      - name: setup git config
-       run: |
-       git config --global user.email ""
-       git config --global user.name ""
-       echo ${{ github.sha }}
-       sed -i "s#${{ githubactor }}.*#${{ github.actor }}/sriram-web:${{ github.sha }}#g" sample-webapp.yml
-       git add -A
-       git commit -am "update image for - ${{ github.sha }}"
-   - run: echo ${{ github }}
-   - run: git push origin master
+       run: /
+         git config --global user.email "medichirlabujji@gmail.com"
+         git config --global user.name "Bujji369"
+         echo ${{ github.sha }}
+         sed -i "s#${{ githubactor }}.*#${{ github.actor }}/sriram-web:${{ github.sha }}#g" sample-webapp.yml
+         git add -A
+         git commit -am "update image for - ${{ github.sha }}"
+     - run: echo ${{ github }}
+     - run: git push origin master
             
 
     
