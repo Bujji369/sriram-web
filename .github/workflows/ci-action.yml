@@ -1,96 +1,78 @@
-name: Docker
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+name: Build step
 
 on:
   schedule:
-    - cron: '45 22 * * *'
+    - cron: '* * * * *'
   push:
     branches: [ "master" ]
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+  
+    
   pull_request:
     branches: [ "master" ]
 
-env:
-  # Use docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
-
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
-
+     steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots package
+        
+  build-and-push-docker-image:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    needs: ['build']
     steps:
-      - name: Checkout repository
+      - name: Check out the repo
         uses: actions/checkout@v3
-
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
-      - name: Install cosign
-        if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@f3c664df7af409cb4873aa5068053ba9d61a57b6 #v2.6.0
+        
+      - name: set up Docker Buildx
+        id: buildX
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          cosign-release: 'v1.11.0'
-
-
-      # Workaround: https://github.com/docker/build-push-action/issues/461
-      - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
-
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        
+      - name: Build image and push to Docker Hub and GitHub Container Registry
+        uses: docker/build-push-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          context: ./
+          tags: /
+             Bujji369/sriram-web:${{ github.sha }}
+             ghcr.io/Bujji369/sriram-web:${{ github.sha }}
+             
+          push: ${{ github.ref == 'refs/head/master' }}
+        
+        - name: Image digest
+          run: echo ${{ steps.docker_build.outputs.digest }}
+          
+ update-manifest-stage:
+   runs-on: ubuntu-latest
+   needs: ['build-and-push-docker-image']
+   steps:
+     - uses: actions/checkout@v3
+       with:
+         repository: 
+         ref: 'master'
+         token: ${{ secrets.G_TOKEN }}
+     - name: setup git config
+       run: |
+       git config --global user.email ""
+       git config --global user.name ""
+       echo ${{ github.sha }}
+       sed -i "s#${{ githubactor }}.*#${{ github.actor }}/sriram-web:${{ github.sha }}#g" sample-webapp.yml
+       git add -A
+       git commit -am "update image for - ${{ github.sha }}"
+   - run: echo ${{ github }}
+   - run: git push origin master
+            
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
-      - name: Build and push Docker image
-        id: build-and-push
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          COSIGN_EXPERIMENTAL: "true"
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+    
