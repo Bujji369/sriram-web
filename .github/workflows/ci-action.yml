@@ -69,7 +69,7 @@ jobs:
      - uses: actions/checkout@v3
        with:
          repository: Bujji369/sriram-web-infra
-         ref: 'main'
+         ref: 'master'
          token: ${{ secrets.G_TOKEN }}
      - name: setup git config
        run: |
