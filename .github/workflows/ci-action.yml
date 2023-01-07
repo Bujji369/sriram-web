@@ -47,7 +47,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/clockbox:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/clockbox:Dev-${{ github.sha }}
           
   update-manifest-stage:
    runs-on: ubuntu-latest
