@@ -68,6 +68,5 @@ jobs:
          git commit -am "update image for - ${{ github.sha }}"
      - run: echo ${{ github }}
      - run: git push -u origin master
-            
 
     
