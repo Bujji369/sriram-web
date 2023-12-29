@@ -16,6 +16,11 @@ pipeline {
 			   }
             }
         }
+	stage('compile') {
+            steps {
+                sh 'mvn -B -DskipTests clean compile'
+            }
+        }
         stage('Build Jar') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
