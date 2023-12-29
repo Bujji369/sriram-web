@@ -11,7 +11,7 @@ pipeline {
             steps {
 			   script {
 
-               git 'https://github.com/Bujji369/web-app.git'
+               git 'https://github.com/Bujji369/sriram-web.git'
 
 			   }
             }
@@ -45,7 +45,7 @@ pipeline {
                 withAWS(credentials: 'aws_Credentials_Id', region: '${region}') {
                   script {
                     sh ('aws eks update-kubeconfig --name ${eksCluster} --region ${region}')
-                    sh "kubectl apply -f maven-web-app-deploy.yml"
+                    sh "kubectl apply -f sample-webapp.yml"
 		    sh "sleep 20s"
                 }
                 }
