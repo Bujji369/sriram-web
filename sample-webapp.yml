@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: spring-boot-k8s
-          image: srirammani/k8s_images:devlopment-15
+          image: srirammani/k8s_images:devlopment-17
          
           ports:
             - containerPort: 8080 
