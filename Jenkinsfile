@@ -34,10 +34,10 @@ pipeline {
         stage('Image upload DockerHub') {
             steps {
 		script {
-			   
-                   withDockerRegistry([ credentialsId: "docker_hub_Id", url: "https://hub.docker.com/" ]) {
-            
-                    // sh "docker login -u srirammani -p ${DOCKERHUB}"
+		    withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
+    			
+		            
+                    sh "docker login -u srirammani -p ${DOCKERHUB}"
 		    sh "sleep 20s"
 		    }
           
