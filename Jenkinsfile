@@ -37,7 +37,7 @@ pipeline {
 			   
                    withDockerRegistry([ credentialsId: "docker_hub_Id", url: "https://hub.docker.com/" ]) {
             
-                    sh "docker login -u srirammani -p ${DOCKERHUB}"
+                    // sh "docker login -u srirammani -p ${DOCKERHUB}"
 		    sh "sleep 20s"
 		    }
           
