@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: spring-boot-k8s
-          image: srirammani/k8s_images:devlopment-1
+          image: srirammani/k8s_images:devlopment-15
          
           ports:
             - containerPort: 8080 
@@ -33,4 +33,4 @@ spec:
     - protocol: "TCP"
       port: 8080 
       targetPort: 8080 
-  type: NodePort 
+ 
