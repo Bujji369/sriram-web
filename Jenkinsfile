@@ -1,4 +1,4 @@
-def eksCluster="my-eks-cluster"
+def eksCluster="dev-eks-cluster"
 def region="ap-south-1"
 def artifactName = "${env.BUILD_NUMBER}"
 pipeline {
@@ -6,9 +6,9 @@ pipeline {
         maven 'Maven3'
     }
     agent any
-     environment {
+     /* environment {
         NEW_IMAGE_NAME = "srirammani/k8s_images:devlopment-${artifactName}"
-        YAML_FILE_PATH = "sample-webapp.yml"
+        YAML_FILE_PATH = "sample-webapp.yml" */
      }
     stages {
         stage('Git Clone') {
@@ -50,7 +50,7 @@ pipeline {
 		}
             }
 	}
-	stage('Chage Image in yaml') {
+	/* stage('Chage Image in yaml') {
             steps {
                 script {
 		   sh 'git config --global user.email "medichirlabujji@gmail.com"'
@@ -64,14 +64,17 @@ pipeline {
                     sh "git push origin master"  
                 }
             }
-        }
+        } */
         stage('Integrate Jenkins with EKS Cluster and Deploy App') {
             steps {
+		    
                 withAWS(credentials: 'aws_Credentials_Id', region: '${region}') {
                   script {
+		    sh "cat sample-webapp.yml"
                     sh ('aws eks update-kubeconfig --name ${eksCluster} --region ${region}')
-                    sh "kubectl apply -f sample-webapp.yml"
 		    sh "sleep 20s"
+                    sh "kubectl apply -f sample-webapp.yml"
+		
                 }
                 }
         }
