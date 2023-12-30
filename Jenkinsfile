@@ -37,7 +37,7 @@ pipeline {
 		    withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
     			
 		            
-                    sh "docker login -u srirammani -p ${DOCKERHUB}"
+                    sh "docker login -u srirammani -p ${dockerhubpwd}"
 		    sh "sleep 20s"
 		    }
           
