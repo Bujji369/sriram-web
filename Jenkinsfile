@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Docker Image Build') {
             steps {
-                sh "docker build -t srirammani/k8s_images:devlopment-${artifactName} ."
+                sh "docker build -t ${artifactName} ."
          }
         }
         stage('image upload DockerHub') {
