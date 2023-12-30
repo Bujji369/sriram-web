@@ -9,7 +9,7 @@ pipeline {
      /* environment {
         NEW_IMAGE_NAME = "srirammani/k8s_images:devlopment-${artifactName}"
         YAML_FILE_PATH = "sample-webapp.yml" */
-     }
+
     stages {
         stage('Git Clone') {
             steps {
