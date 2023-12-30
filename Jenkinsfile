@@ -6,6 +6,10 @@ pipeline {
         maven 'Maven3'
     }
     agent any
+     environment {
+        NEW_IMAGE_NAME = "srirammani/k8s_images:devlopment-${artifactName}"
+        YAML_FILE_PATH = "sample-webapp.yml"
+     }
     stages {
         stage('Git Clone') {
             steps {
@@ -46,6 +50,18 @@ pipeline {
 		}
             }
 	}
+	stage('Chage Image in yaml') {
+            steps {
+                script {
+                    // Update the .yaml file with the new image name
+                    sh "sed -i 's#image:srirammani/k8s_images:*#image: $NEW_IMAGE_NAME#g' $YAML_FILE_PATH"
+                    // Commit and push the changes (assuming you have Git configured)
+                    sh "git add $YAML_FILE_PATH"
+                    sh "git commit -m 'updated the image in YAML file'"
+                    sh "git push origin master"  
+                }
+            }
+        }
         stage('Integrate Jenkins with EKS Cluster and Deploy App') {
             steps {
                 withAWS(credentials: 'aws_Credentials_Id', region: '${region}') {
