@@ -38,9 +38,10 @@ pipeline {
                     withCredentials([string(credentialsId: 'docker_hub_Id', variable: 'DOCKERHUB')]) {
             
                     sh "docker login -u srirammani -p ${DOCKERHUB}"
-                  }
+		    sh "sleep 20s"
+		    }
           
-                  sh "docker push srirammani/k8s_images:devlopment-${artifactName}"
+                  sh "docker push srirammani/k8s_images:devlopment-${artifactName}"	    
 			   
 		}
             }
