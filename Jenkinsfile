@@ -53,6 +53,9 @@ pipeline {
 	stage('Chage Image in yaml') {
             steps {
                 script {
+		   sh 'git config --global user.email "medichirlabujji@gmail.com"'
+         	   sh 'git config --global user.name "Bujji369"'
+		    echo ${{ github.sha }}
                     // Update the .yaml file with the new image name
                     sh "sed -i 's#image:srirammani/k8s_images:*#image: $NEW_IMAGE_NAME#g' $YAML_FILE_PATH"
                     // Commit and push the changes (assuming you have Git configured)
