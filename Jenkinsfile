@@ -31,11 +31,11 @@ pipeline {
                 sh "docker build -t srirammani/k8s_images:devlopment-${artifactName} ."
          }
         }
-        stage('image upload DockerHub') {
+        stage('Image upload DockerHub') {
             steps {
 		script {
 			   
-                    withCredentials([string(credentialsId: 'docker_hub_Id', variable: 'DOCKERHUB')]) {
+                   withDockerRegistry([ credentialsId: "docker_hub_Id", url: "https://hub.docker.com/" ]) {
             
                     sh "docker login -u srirammani -p ${DOCKERHUB}"
 		    sh "sleep 20s"
