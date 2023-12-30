@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh "mvn -B -e package -DskipTests"
             }
         }
         stage('Docker Image Build') {
