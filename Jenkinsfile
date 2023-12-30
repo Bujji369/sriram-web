@@ -71,8 +71,7 @@ pipeline {
                 withAWS(credentials: 'aws_Credentials_Id', region: '${region}') {
                   script {
 		    sh "cat sample-webapp.yml"
-                    sh ('aws eks update-kubeconfig --name ${eksCluster} --region ${region}')
-		    sh "sleep 20s"
+                    sh "sleep 20s"
                     sh "kubectl apply -f sample-webapp.yml"
 		
                 }
